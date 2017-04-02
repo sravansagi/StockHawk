@@ -4,6 +4,8 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.widget.Toast;
+
+import com.udacity.stockhawk.R;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 import java.io.FileNotFoundException;
@@ -111,24 +113,24 @@ public class StockCheckerTask extends AsyncTask<String,Void,Integer> {
         refreshSwipe.refreshSwipe(false);
         switch (resultInt){
             case EMPTYINPUT:
-                Toast.makeText(context,"No Input was provided.",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,context.getString(R.string.stock_no_input),Toast.LENGTH_SHORT).show();
                 break;
             case STOCKNOTVALID:
-                Toast.makeText(context,"The stock is not valid. Please enter a valid stock",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,context.getString(R.string.stock_not_valid),Toast.LENGTH_SHORT).show();
                 break;
             case CONNECTIONPROBLEM:
-                Toast.makeText(context,"There was a problem connecting to servers. Please try again",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.stock_problem_connecting),Toast.LENGTH_SHORT).show();
                 break;
             case NOHISTORYFOUND:
-                Toast.makeText(context,"No History found for the given stock. Please enter a valid stock",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,context.getString(R.string.stock_no_history),Toast.LENGTH_SHORT).show();
                 break;
             case STOCKADDED:
                 break;
             case 6:
-                Toast.makeText(context,"The Stock does not have a price. Please give a valid stock",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,context.getString(R.string.stock_no_price),Toast.LENGTH_SHORT).show();
                 break;
             default:
-                Toast.makeText(context,"Error Adding Stock. Please try again",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,context.getString(R.string.stock_default_error),Toast.LENGTH_SHORT).show();
         }
     }
 }

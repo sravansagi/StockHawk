@@ -23,4 +23,12 @@
     <string name="stock_widget_name">stock widget</string>
     <string name="activity_main_fab_contentdescription">Add Stock</string>
     <string name="stockgraph_content_description">The Stock Graph</string>
+
+    <!-- The following string are of StockCheckerTask-->
+    <string name="stock_no_input">No Input was provided.</string>
+    <string name="stock_not_valid">The stock is not valid. Please enter a valid stock</string>
+    <string name="stock_problem_connecting">There was a problem connecting to servers. Please try again</string>
+    <string name="stock_no_history">No History found for the given stock. Please enter a valid stock</string>
+    <string name="stock_no_price">The Stock does not have a price. Please give a valid stock</string>
+    <string name="stock_default_error">Error Adding Stock. Please try again</string>
 </resources>
