@@ -13,6 +13,7 @@ import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
@@ -31,11 +32,12 @@ import yahoofinance.quotes.stock.StockQuote;
 public final class QuoteSyncJob {
 
     private static final int ONE_OFF_ID = 2;
-    private static final String ACTION_DATA_UPDATED = "com.udacity.stockhawk.ACTION_DATA_UPDATED";
+    public static final String ACTION_DATA_UPDATED = "com.udacity.stockhawk.ACTION_DATA_UPDATED";
     private static final int PERIOD = 300000;
     private static final int INITIAL_BACKOFF = 10000;
     private static final int PERIODIC_ID = 1;
     private static final int YEARS_OF_HISTORY = 2;
+    public static final SimpleDateFormat formatter = new SimpleDateFormat("dd MMM yyyy");
 
     private QuoteSyncJob() {
     }
@@ -85,9 +87,19 @@ public final class QuoteSyncJob {
 
                 StringBuilder historyBuilder = new StringBuilder();
 
-                for (HistoricalQuote it : history) {
+                /*for (HistoricalQuote it : history) {
                     historyBuilder.append(it.getDate().getTimeInMillis());
                     historyBuilder.append(", ");
+                    historyBuilder.append(it.getClose());
+                    historyBuilder.append("\n");
+                }*/
+
+                // Modified to store the data directly as date instead of time in Millis
+
+                for (HistoricalQuote it : history) {
+                    historyBuilder.append(formatter.format(it.getDate().getTime()));
+                    //historyBuilder.append(it.getDate());
+                    historyBuilder.append("::");
                     historyBuilder.append(it.getClose());
                     historyBuilder.append("\n");
                 }

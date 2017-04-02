@@ -36,7 +36,6 @@ public final class PrefUtils {
             return defaultStocks;
         }
         return prefs.getStringSet(stocksKey, new HashSet<String>());
-
     }
 
     private static void editStockPref(Context context, String symbol, Boolean add) {
@@ -52,7 +51,7 @@ public final class PrefUtils {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putStringSet(key, stocks);
-        editor.apply();
+        editor.commit();
     }
 
     public static void addStock(Context context, String symbol) {

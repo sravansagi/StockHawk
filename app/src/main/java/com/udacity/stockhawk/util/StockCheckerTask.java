@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.widget.Toast;
 import com.udacity.stockhawk.data.Contract;
 import com.udacity.stockhawk.data.PrefUtils;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.List;
@@ -14,6 +15,8 @@ import yahoofinance.YahooFinance;
 import yahoofinance.histquotes.HistoricalQuote;
 import yahoofinance.histquotes.Interval;
 import yahoofinance.quotes.stock.StockQuote;
+
+import static com.udacity.stockhawk.sync.QuoteSyncJob.formatter;
 
 /**
  * Created by Sravan on 3/29/2017.StockCheckerTask will check if the new stock entered by the user is valid or not
@@ -28,6 +31,8 @@ public class StockCheckerTask extends AsyncTask<String,Void,Integer> {
     private final int STOCKNOTVALID = 2; // This corresponds to the Invalid returned from doInBackground
     private final int STOCKADDED = 3; // This corresponds to the stock added to DB in doInBackground
     private final int CONNECTIONPROBLEM = 4; // This corresponds to problem connecting to Yahoo API in doInBackground
+    private final int NOHISTORYFOUND = 5; // This corresponds to no history found for give stock problem
+    private int STOCKNOTFULL = -1;
 
     public StockCheckerTask(Context context, RefreshSwipe refreshSwipe) {
         this.context = context;
@@ -48,8 +53,14 @@ public class StockCheckerTask extends AsyncTask<String,Void,Integer> {
                 Calendar to = Calendar.getInstance();
                 from.add(Calendar.YEAR, -YEARS_OF_HISTORY);
                 StockQuote quote = stock.getQuote();
+                float price;
+                if(quote.getPrice() != null){
+                    price = quote.getPrice().floatValue();
+                }else {
+                    STOCKNOTFULL = 6;
+                    throw new UnsupportedOperationException("");
+                }
 
-                float price = quote.getPrice().floatValue();
                 float change = quote.getChange().floatValue();
                 float percentChange = quote.getChangeInPercent().floatValue();
 
@@ -58,8 +69,8 @@ public class StockCheckerTask extends AsyncTask<String,Void,Integer> {
                 StringBuilder historyBuilder = new StringBuilder();
 
                 for (HistoricalQuote it : history) {
-                    historyBuilder.append(it.getDate().getTimeInMillis());
-                    historyBuilder.append(", ");
+                    historyBuilder.append(formatter.format(it.getDate().getTime()));
+                    historyBuilder.append("::");
                     historyBuilder.append(it.getClose());
                     historyBuilder.append("\n");
                 }
@@ -77,6 +88,13 @@ public class StockCheckerTask extends AsyncTask<String,Void,Integer> {
             else {
                 return STOCKNOTVALID;
             }
+        } catch (UnsupportedOperationException e) {
+            e.printStackTrace();
+            return STOCKNOTFULL;
+        }
+         catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return NOHISTORYFOUND;
         } catch (IOException e) {
             e.printStackTrace();
             return CONNECTIONPROBLEM;
@@ -101,12 +119,16 @@ public class StockCheckerTask extends AsyncTask<String,Void,Integer> {
             case CONNECTIONPROBLEM:
                 Toast.makeText(context,"There was a problem connecting to servers. Please try again",Toast.LENGTH_SHORT).show();
                 break;
+            case NOHISTORYFOUND:
+                Toast.makeText(context,"No History found for the given stock. Please enter a valid stock",Toast.LENGTH_SHORT).show();
+                break;
             case STOCKADDED:
                 break;
+            case 6:
+                Toast.makeText(context,"The Stock does not have a price. Please give a valid stock",Toast.LENGTH_SHORT).show();
+                break;
+            default:
+                Toast.makeText(context,"Error Adding Stock. Please try again",Toast.LENGTH_SHORT).show();
         }
-        /*
-        if (resultString)
-        Toast.makeText(context,"Add method clicked",Toast.LENGTH_SHORT).show();
-        super.onPostExecute(resultString);*/
     }
 }
