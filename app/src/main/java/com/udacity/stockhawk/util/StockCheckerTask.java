@@ -54,7 +54,13 @@ public class StockCheckerTask extends AsyncTask<String,Void,Integer> {
                 Calendar from = Calendar.getInstance();
                 Calendar to = Calendar.getInstance();
                 from.add(Calendar.YEAR, -YEARS_OF_HISTORY);
-                StockQuote quote = stock.getQuote();
+                StockQuote quote;
+                if(stock.getQuote() != null){
+                    quote = stock.getQuote();
+                }else {
+                    STOCKNOTFULL = 6;
+                    throw new UnsupportedOperationException("");
+                }
                 float price;
                 if(quote.getPrice() != null){
                     price = quote.getPrice().floatValue();
@@ -90,7 +96,12 @@ public class StockCheckerTask extends AsyncTask<String,Void,Integer> {
             else {
                 return STOCKNOTVALID;
             }
-        } catch (UnsupportedOperationException e) {
+        } catch (StringIndexOutOfBoundsException e){
+            e.printStackTrace();
+            return STOCKNOTVALID;
+        }
+
+        catch (UnsupportedOperationException e) {
             e.printStackTrace();
             return STOCKNOTFULL;
         }
